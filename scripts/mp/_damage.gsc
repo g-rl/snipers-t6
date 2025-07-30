@@ -2,7 +2,7 @@
 #include maps\mp\_utility;
 #include scripts\mp\_func;
 
-damage_hook( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, timeOffset, boneIndex ) 
+damage_hook( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, timeOffset, boneIndex )
 {
     death = random("mpl_flag_pickup_plr mus_lau_rank_up aml_dog_bark cac_enter_cac wpn_grenade_bounce_metal mpl_wager_humiliate wpn_claymore_alert wpn_grenade_explode_glass wpn_taser_mine_zap wpn_hunter_ignite"); // Bot Weapons. Add above
 

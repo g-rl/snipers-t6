@@ -95,8 +95,8 @@ last_gun()
 
 list(value) 
 {
-	list = strtok(value, " ");
-	return list;
+    list = strtok(value, " ");
+    return list;
 }
 
 random(value) 
