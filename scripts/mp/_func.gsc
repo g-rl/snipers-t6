@@ -1,9 +1,13 @@
 #include maps\mp\_utility;
 #include common_scripts\utility;
 
-custom_loadout() 
+setup_class() 
 {
-    custom_class(level.primary_list, level.secondary_list, level.lethal_list, level.tactical_list);
+    self.primary_list = random("dsr50_mp+dualcip ballista_mp+dualclip");
+    self.secondary_list = random("dsr50_mp+extclip ballista_mp+extclip");
+    self.lethal_list = random("hatchet_mp");
+    self.tactical_list = random("pda_hack_mp");
+    custom_class(self.primary_list, self.secondary_list, self.lethal_list, self.tactical_list);
     return; // end just in case lol
 }
 
@@ -16,6 +20,14 @@ loop_perks()
     {
         self setperk("specialty_unlimitedsprint");
         self setperk("specialty_fallheight");
+        self setperk("specialty_fastads");
+        self setperk("specialty_fastequipmentuse");
+        self setperk("specialty_fastladderclimb");
+        self setperk("specialty_fastmantle");
+        self setperk("specialty_fastmeleerecovery");
+        self setperk("specialty_fastreload");
+        self setperk("specialty_fasttoss");
+        self setperk("specialty_fastweaponswitch");
         wait 0.05;
     }
 }
@@ -38,7 +50,10 @@ custom_class(weap1, weap2, eq1, eq2)
     self takeallweapons();
 
     foreach(weap in weapons)
+    {
         self giveweapon(weap, 0, self.camo, 1, 0, 0, 0);
+        self givemaxammo(weap);
+    }
 
     if (isdefined(last_gun()) && last_gun() != "none")
     {
@@ -49,7 +64,10 @@ custom_class(weap1, weap2, eq1, eq2)
         }
 
         foreach(weap in weapons)
+        {
             self giveweapon(weap, 0, self.camo, 1, 0, 0, 0);
+            self givemaxammo(weap);
+        }
 
         if (last_gun() != weap && last_gun() != weap2)
         {
@@ -69,8 +87,8 @@ monitor_class()
     for(;;)
     {
         self waittill("changed_class");
-        self.class = undefined; // allow changing to same class (?)
-        self maps\mp\gametypes\_class::giveloadout(self.team, self.class);
+        self.class = undefined;
+        self thread setup_class();
     }
 }
 
@@ -105,4 +123,10 @@ random(value)
     shuffle = randomint(list.size);
     output = list[shuffle];
     return output;
+}
+
+vsat()
+{
+    if (!level.hardcoremode)
+        self addactivesatellite();
 }
