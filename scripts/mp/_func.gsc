@@ -57,6 +57,8 @@ custom_class(weap1, weap2, eq1, eq2)
 monitor_class()
 {
     level endon("game_ended");
+    self endon("death");
+    self endon("disconnect");
     for(;;)
     {
         self waittill("changed_class");

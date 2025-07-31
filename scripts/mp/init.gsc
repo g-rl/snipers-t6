@@ -19,7 +19,6 @@ on_player_connect()
     {
         level waittill("connected", player);
         player thread on_player_spawned();
-        player thread monitor_class();
         
         // correct match bonuses (kinda)
         if (getdvar("g_gametype") == "sd")
@@ -37,6 +36,7 @@ on_player_spawned()
     {
         self waittill("spawned_player");
         self.camo = self calcweaponoptions(self.class_num, 0);
+        self thread monitor_class();
         // welcome message
         if (common_scripts\utility::is_true(self.pers["first_spawn"]))
         {
@@ -46,8 +46,8 @@ on_player_spawned()
             self thread move_after_game(); // mw2 end game
         }
         
-        self freezecontrols(0);    
-        self thread instant_respawn();  
+        // self freezecontrols(0);    
+        if (getdvar("g_gametype") != "sd") self thread instant_respawn();  
         self thread setup_class();
         wait 0.1;
         self loop_perks();
@@ -58,6 +58,7 @@ instant_respawn()
 {
     level endon("game_ended");
     self endon("disconnect");
+    self endon("death");
     for(;;)
     {
         self waittill("death");
