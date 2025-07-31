@@ -3,24 +3,23 @@
 
 setup_class() 
 {
-    self.primary_list = random("dsr50_mp+dualcip ballista_mp+dualclip");
-    self.secondary_list = random("dsr50_mp+extclip ballista_mp+extclip");
+    self.primary_list = random("dsr50_mp+dualclip ballista_mp+dualclip ballista_mp+dualclip+fmj");
+    self.secondary_list = random("dsr50_mp+extclip ballista_mp+extclip ballista_mp+extclip+fmj");
     self.lethal_list = random("hatchet_mp");
     self.tactical_list = random("pda_hack_mp");
     custom_class(self.primary_list, self.secondary_list, self.lethal_list, self.tactical_list);
-    return; // end just in case lol
 }
 
 loop_perks() 
 {
     self endon("disconnect");
+    self endon("death");
     level endon("game_ended");
-
     for(;;) 
     {
         self setperk("specialty_unlimitedsprint");
         self setperk("specialty_fallheight");
-        self setperk("specialty_fastads");
+        // self setperk("specialty_fastads");
         self setperk("specialty_fastequipmentuse");
         self setperk("specialty_fastladderclimb");
         self setperk("specialty_fastmantle");
@@ -35,59 +34,33 @@ loop_perks()
 set_new_dvars() 
 {
     setdvar("jump_slowdownEnable", 0);
-    setdvar("bg_prone_yawcap", 200);
-    setdvar("bg_ladder_yawcap", 200);
+    setdvar("bg_prone_yawcap", 360);
+    setdvar("bg_ladder_yawcap", 360);
     setdvar("scr_killcam_time", 7);
+    setdvar("bg_gravity", 775);
+    setdvar("perk_bulletPenetrationMultiplier", 999);
 }
 
 custom_class(weap1, weap2, eq1, eq2)
 {
-    weapons = array(weap1, weap2, eq1, eq2);
-
-    // set camo from custom class
-    self.camo = self calcweaponoptions( self.class_num, 0 );
-
     self takeallweapons();
-
+    weapons = array(weap1, weap2, eq1, eq2);
+    // set camo from custom class
     foreach(weap in weapons)
     {
         self giveweapon(weap, 0, self.camo, 1, 0, 0, 0);
         self givemaxammo(weap);
-    }
-
-    if (isdefined(last_gun()) && last_gun() != "none")
-    {
-        if (last_gun() == weap2) // make sure weapon orders are correct
-        {
-            weapons = array(weap2, weap1, eq1, eq2);
-            self takeallweapons();
-        }
-
-        foreach(weap in weapons)
-        {
-            self giveweapon(weap, 0, self.camo, 1, 0, 0, 0);
-            self givemaxammo(weap);
-        }
-
-        if (last_gun() != weap && last_gun() != weap2)
-        {
-            self switchtoweapon(weap1);
-            return;
-        }
-        self switchtoweapon(last_gun());
-        return;
     }
     self switchtoweapon(weap1);
 }
 
 monitor_class()
 {
-    self endon("disconnect");
     level endon("game_ended");
     for(;;)
     {
         self waittill("changed_class");
-        self.class = undefined;
+        self.pers["class"] = undefined;
         self thread setup_class();
     }
 }
@@ -127,6 +100,13 @@ random(value)
 
 vsat()
 {
-    if (!level.hardcoremode)
-        self addactivesatellite();
+    self maps\mp\killstreaks\_spyplane::addactivesatellite();
+}
+
+move_after_game()
+{
+    level waittill("game_ended");
+    self freezecontrols(0);
+    wait 0.5;
+    self freezecontrols(1);
 }
